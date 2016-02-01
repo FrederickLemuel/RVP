@@ -26,7 +26,7 @@ module Exec(
 			OR  : Out = Operand1 | Operand2; 			//Perfroms OR on the two operands
 			AND : Out = Operand1 & Operand2; 			//Performs AND on the two operands
 			SLT : begin
-					 if(Operand1 < Operand2)				//SLT sets the output to 1 if the first operand is less than the second and zero otherwise
+					 if(Operand1 < Operand2)		//SLT sets the output to 1 if the first operand is less than the second and zero otherwise
 						Out=1;
 					 else
 						Out=32'b0;							 
