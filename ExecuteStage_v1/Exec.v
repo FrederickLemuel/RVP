@@ -6,14 +6,14 @@ module Exec(
     );
 	 
 	parameter ADD=4'b0000,     //Set 4 digit binary values for the operations to performed
-				 SUB=4'b0001,
-             XOR=4'b0010,
-				 OR=4'b0011,
-				 AND=4'b0100,
-				 SLT=4'b0101,
-				 LLS=4'b0110,
-				 LRS=4'b0111,
-				 ARS=4'b1000;
+		  SUB=4'b1000,
+                  XOR=4'b0100,
+		  OR=4'b0011,
+		  AND=4'b0111,
+		  SLT=4'b0010,     //Set Less-than
+		  LLS=4'b0001,     //Logical Left-shift
+		  LRS=4'b0101,	   //Logical right-shift
+		  ARS=4'b1101;     //Arithmetic right-shift
 	
 	always@(*)
 	
