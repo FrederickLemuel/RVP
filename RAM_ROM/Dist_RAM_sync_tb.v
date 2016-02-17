@@ -1,27 +1,4 @@
-`timescale 1ns / 1ps
 `define MEM_SIZE 32
-
-////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer:
-//
-// Create Date:   11:17:11 02/17/2016
-// Design Name:   Dist_RAM_sync
-// Module Name:   /home/lemy/Project-8thSem/Code/Memory/Dist_RAM_sync_tb.v
-// Project Name:  Memory
-// Target Device:  
-// Tool versions:  
-// Description: 
-//
-// Verilog Test Fixture created by ISE for module: Dist_RAM_sync
-//
-// Dependencies:
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-////////////////////////////////////////////////////////////////////////////////
 
 module Dist_RAM_sync_tb;
 
