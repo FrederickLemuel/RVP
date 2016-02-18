@@ -41,15 +41,19 @@ module dist_ROM(
   spo
 );
 
-input [5 : 0] a;
-output [15 : 0] spo;
+parameter mem_width=16;
+parameter mem_depth=64;
+parameter add_width=6;
+
+input [(add_width-1) : 0] a;
+output [(mem_width-1) : 0] spo;
 
 // synthesis translate_off
 
   DIST_MEM_GEN_V7_2 #(
-    .C_ADDR_WIDTH(6),
+    .C_ADDR_WIDTH(add_width),
     .C_DEFAULT_DATA("0"),
-    .C_DEPTH(64),
+    .C_DEPTH(mem_width),
     .C_FAMILY("spartan6"),
     .C_HAS_CLK(0),
     .C_HAS_D(0),
@@ -78,7 +82,7 @@ output [15 : 0] spo;
     .C_REG_A_D_INPUTS(0),
     .C_REG_DPRA_INPUT(0),
     .C_SYNC_ENABLE(1),
-    .C_WIDTH(16)
+    .C_WIDTH(mem_width)
   )
   inst (
     .A(a),
