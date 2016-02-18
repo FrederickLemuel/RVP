@@ -54,7 +54,7 @@ input clk;
 input we;
 output [(mem_width-1) : 0] spo;
 
-// synthesis translate_off
+// Synthesis translate_off
 
   DIST_MEM_GEN_V7_2 #(
     .C_ADDR_WIDTH((add_width),
