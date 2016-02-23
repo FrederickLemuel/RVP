@@ -7,18 +7,18 @@
 //ALU operations
 `define ADD 4'b0000     
 `define SUB 4'b1000
-'define XOR 4'b0100
-'define OR 4'b0011
-'define AND 4'b0111
+`define XOR 4'b0100
+`define OR 4'b0110
+`define AND 4'b0111
 
 //Set Less-than. Signed values of operands are considered
-'define SLT 4'b0010  
+`define SLT 4'b0010  
 //Unsigned Set Less Than
-'define SLTU 4'b0110  
+`define SLTU 4'b0011  
 //Logical Left-shift
-'define LLS 4'b0001   
+`define LLS 4'b0001   
 //Logical right-shift
-'define LRS 4'b0101
+`define LRS 4'b0101
 //Arithmetic right-shift 
 `define ARS 4'b1101
 
@@ -32,10 +32,10 @@
 
 //Jump instruction and load upper immediate
 `define JALR 4'b1001		
-`defineLUI 4'b1000
+`define LUI 4'b1000
 
-'define DATA_MEM_WORD_SIZE 32
-'define REGISTER_WIDTH 32
+`define DATA_MEM_WORD_SIZE 32
+`define REGISTER_WIDTH 32
 `define ALU_CTRL_WIDTH 5
 				 
 module Exec(
@@ -58,42 +58,60 @@ module Exec(
 			//Case block for branch instructions and JALR	
 			case(Operation[(`ALU_CTRL_WIDTH-2):0])
 									
-       		                `BEQ: bcond=flag;
-				`BNE: bcond=~flag;
+       	   `BEQ: begin
+							bcond=flag;
+							Out=32'bx;
+						end
+				`BNE: begin
+							bcond=~flag;
+							Out=32'bx;
+						end
 				`BGE: begin				 
 						 if($signed(Operand1)>=$signed(Operand2))
 						  bcond=1;						
 						 else
 						  bcond=0;
+						  
+						  Out=32'bx;
 					   end
 				 		
-			        `BGEU:begin
+			   `BGEU:begin
 						 if(Operand1>=Operand2)
 						  bcond=1;
 						 else
 						  bcond=0;
+						  
+						  Out=32'bx;
 					   end
 				`BLT: begin
 						if($signed(Operand1)<$signed(Operand2))
 						bcond=1;						
 						else					
 						bcond=0;
+						
+						Out=32'bx;
 					  end	
 				`BLTU:begin
 						 if(Operand1<Operand2)
 						  bcond=1;						
 						 else		
 					     bcond=0;
+						  
+						  Out=32'bx;
 					   end
 				`JALR:begin
 				       Out=(Operand1+Operand2);
 						 Out[0]=1'b0;
+						 bcond=1'b0;						 
 						end
 				`LUI: begin
 						 Out=Operand2;
+						 bcond=1'b0;
 					  end						
-				default: bcond=0;
-				
+				default: begin
+								bcond=0;
+								Out=32'bx;
+							end
 			endcase
 		end
 		
@@ -102,27 +120,59 @@ module Exec(
 		begin
 			
 			case(Operation[3:0])
-				`ADD : Out = Operand1 + Operand2; 			//Adds first and second operand
-				`SUB : Out = Operand1 - Operand2; 			//Subtracts the second operand from the first
-				`XOR : Out = Operand1 ^ Operand2; 			//Perfroms XOR on the two operands
-				`OR  : Out = Operand1 | Operand2; 			//Perfroms OR on the two operands
-				`AND : Out = Operand1 & Operand2; 			//Performs AND on the two operands
+				`ADD : begin
+							Out = Operand1 + Operand2; 			//Adds first and second operand
+							bcond=1'b0;
+						end
+				`SUB : begin
+							Out = Operand1 - Operand2; 			//Subtracts the second operand from the first
+							bcond=1'b0;
+						end
+				`XOR : begin
+							Out = Operand1 ^ Operand2; 			//Perfroms XOR on the two operands
+							bcond=1'b0;
+						end
+						
+				`OR  : begin
+							Out = Operand1 | Operand2; 			//Perfroms OR on the two operands
+							bcond=1'b0;
+						end
+				`AND : begin
+							Out = Operand1 & Operand2; 			//Performs AND on the two operands
+							bcond=1'b0;
+						end
 				`SLTU : begin
 						if(Operand1 < Operand2)				//(Unsigned)SLTU sets the output to 1 if the first operand is less than the second and zero otherwise
 							Out=1;
 						else
-							Out=0;							 
+							Out=0;
+
+						bcond=1'b0;			
 						end
 				`SLT : begin
 						if($signed(Operand1) < $signed(Operand2))	//(Signed)SLT sets the output to 1 if the first operand is less than the second and zero otherwise
 							Out=1;
 						else
-							Out=0;							 
+							Out=0;	
+							
+						bcond=1'b0;	
 						end		
-				`LLS : Out = Operand1 << Operand2[4:0]; 	//Shifts the 1st operand left by the value held in the lowest 5 bits of the second operand, filling the lowest bits with 0's
-				`LRS : Out = Operand1 >> Operand2[4:0]; 	//Shifts the 1st operand right by the value held in the lowest 5 bits of the second operand, filling the lowest bits with 0's
-				`ARS : Out = Operand1 >>> Operand2[4:0];	//Shifts the 1st operand right by the value held in the lowest 5 bits of the second operand, filling the lowest bits with the sign bit			
-				default: Out={(`DATA_MEM_WORD_SIZE){1'bx}};
+				`LLS : begin
+							Out = Operand1 << Operand2[4:0]; 	//Shifts the 1st operand left by the value held in the lowest 5 bits of the second operand, filling the lowest bits with 0's
+							bcond=1'b0;
+						end
+				`LRS : begin
+							Out =Operand1 >> Operand2[4:0]; 	//Shifts the 1st operand right by the value held in the lowest 5 bits of the second operand, filling the lowest bits with 0's
+							bcond=1'b0;
+						 end
+				`ARS : begin
+							Out = Operand1 >>> Operand2[4:0];	//Shifts the 1st operand right by the value held in the lowest 5 bits of the second operand, filling the lowest bits with the sign bit			
+							bcond=1'b0;
+						end
+				default: begin
+								Out={(`DATA_MEM_WORD_SIZE){1'bx}};
+								bcond=1'b0;
+							end
 			 endcase			
       end		 
 	end	  
