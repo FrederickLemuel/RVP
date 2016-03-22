@@ -108,103 +108,127 @@ module cntl_mc( input [4:0] opcode,
 		begin
 			case(state)			
 			`FETCH:begin
-						next_state=`DECODE;
-					 end
+			  next_state=`DECODE;
+			end
 			`DECODE:begin
-						 case(instruction[6:2])
-							`BRANCH:begin
-										next_state=`BRANCH_S;								
-									  end									  
-							 `JALR:begin
-										next_state=`JALR_S;					
-									 end
-							 `JAL:begin
-										next_state=`JAL_S;								 
-									 end
-							 `AUIPC:begin
-										next_state=`AUIPC_S;			 
-									 end
-							 `LUI:begin
-										next_state=`LUI_S;				 
-									 end
-							 `STORE:begin
-										next_state=`STORE_S;			 
-									 end
-							`LOAD:begin
-										next_state=`LOAD_S;			 
-									end
+			     case(instruction[6:2])
+			       `BRANCH:begin
+			          next_state=`BRANCH_S;								
+			        end									  
+				
+				`JALR:begin
+			     	  next_state=`JALR_S;					
+				 end
+				
+				`JAL:begin
+				  next_state=`JAL_S;								 
+				end
+				
+				`AUIPC:begin
+				  next_state=`AUIPC_S;			 
+				end
+				
+				`LUI:begin
+				  next_state=`LUI_S;				 
+				end
+				
+				`STORE:begin
+				  next_state=`STORE_S;			 
+				end
+				
+				`LOAD:begin
+				  next_state=`LOAD_S;			 
+				end
 									
-							`I_TYPE:begin
-										next_state=`I_TYPE_S;								 
-									  end
-							`R_TYPE:begin
-										next_state=`R_TYPE_S;				 
-									 end	
-						  endcase							
-							alu_memory_ctrl(alu_ctrl,mem_size,instruction);
-						 end
+				`I_TYPE:begin
+				  next_state=`I_TYPE_S;								 
+				end
+				
+				`R_TYPE:begin
+				  next_state=`R_TYPE_S;				 
+				end	
+			     endcase							
+			  alu_memory_ctrl(alu_ctrl,mem_size,instruction);
+			end
+			
 			`BRANCH_S:begin
-							if(bcond==0)
-								next_state=`FETCH;
-							else
-								next_state=`BCOND1;							
-						 end
+			  if(bcond==0)
+			   next_state=`FETCH;
+			  else
+			   next_state=`BCOND1;							
+			 end
+			
 			`BCOND1:begin
-						 next_state=`ALU2PC;
-					  end
+			   next_state=`ALU2PC;
+			end
+			
 			`JALR_S:begin
-						 next_state=`JALR2;
-					  end
+			   next_state=`JALR2;
+			end
+			
 			`JALR2:begin
-						next_state=`ALU2PC;
-					  end
+			  next_state=`ALU2PC;
+			end
+			
 			`JAL_S:begin
-						next_state=`JAL2;
-					 end
+			  next_state=`JAL2;
+			end
+			
 			`JAL2:begin
-						next_state=`ALU2PC;	
-					 end
+			  next_state=`ALU2PC;	
+			end
+			
 			`ALU2PC:begin
-						 next_state=`FETCH;
-					  end
+			   next_state=`FETCH;
+			end
+			
 			`AUIPC_S:begin
-						 next_state=`WRITE_BACK;
-						end
+			   next_state=`WRITE_BACK;
+			end
+			
 			`WRITE_BACK:begin
-							  next_state=`FETCH;
-							end
+			   next_state=`FETCH;
+			end
+			
 			`LUI_S:begin
-						next_state=`WRITE_BACK;
-					end
+			   next_state=`WRITE_BACK;
+			end
+			
 			`STORE_S:begin
-						  next_state=`STORE_MEM;
-						end
+			  next_state=`STORE_MEM;
+			end
+			
 			`STORE_MEM:begin
-							 next_state=`FETCH;
-						  end
+			   next_state=`FETCH;
+			end
+			
 			`LOAD_S:begin
-						 next_state=`LOAD2;
-					  end
+			   next_state=`LOAD2;
+			end
+			
 			`LOAD2:begin
-						next_state=`FETCH;
-					 end
-    		`I_TYPE_S:begin
-						 next_state=`WRITE_BACK;
-					   end
+			  next_state=`FETCH;
+			end
+    			
+    			`I_TYPE_S:begin
+			   next_state=`WRITE_BACK;
+			end
+			
 			`R_TYPE_S:begin
-						 next_state=`WRITE_BACK;
-					  end
+			   next_state=`WRITE_BACK;
+			end
+			
 			default:begin
-					  end
-					  
+			  next_state=`FETCH;
+			end
 			endcase
 			
-			cntl_sig=micro_inst[next_state];
+		  cntl_sig=micro_inst[next_state];
 			
 		end
 		
 task alu_memory_ctrl(output [4:0]alu_op,[1:0]memory_size,
-							input [(`INSTRUCTION_WIDTH-1):0]inst);
+		     input [(`INSTRUCTION_WIDTH-1):0]inst);
  begin
 	if (inst[1:0] == 2'b11) begin
 			//determine the type of instruction
